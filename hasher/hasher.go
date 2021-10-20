@@ -10,10 +10,10 @@ var (
 )
 
 type (
-	hasher struct {}
+	hasher struct{}
 )
 
-func New()users.Hasher{
+func New() users.Hasher {
 	return &hasher{}
 }
 
@@ -25,5 +25,3 @@ func (h *hasher) Hash(plainText string) (hashedPassword string, err error) {
 func (h *hasher) Compare(hashedPassword string, plainText string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plainText))
 }
-
-

@@ -72,3 +72,23 @@ func (n *Node) Valid() (bool, error) {
 
 	return true, nil
 }
+
+type NodeRegReq struct {
+	Addr   string `json:"addr,omitempty"`
+	Name   string `json:"name,omitempty"`
+	Region string `json:"region,omitempty"`
+	Latd   string `json:"lat,omitempty"`
+	Longd  string `json:"long,omitempty"`
+	Master string `json:"master,omitempty"`
+}
+
+type RegionRegReq struct {
+	Name string `json:"name,omitempty"`
+	Desc string `json:"desc,omitempty"`
+}
+
+type AdminRegReq struct {
+	Name     string `json:"name,omitempty"`
+	Email    string `json:"email,omitempty"`
+	Password string `json:"password,omitempty"`
+}

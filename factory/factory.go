@@ -26,7 +26,7 @@ func NewFactory() *Factory {
 	}
 }
 
-func (f *Factory) NewRegion(name string, desc string) (models.Region, error) {
+func (f *Factory) NewRegion(req models.RegionRegReq) (models.Region, error) {
 	id, err := f.IDS.ID()
 	if err != nil {
 		return models.Region{}, fmt.Errorf("could not create region: %w\n", err)
@@ -34,8 +34,8 @@ func (f *Factory) NewRegion(name string, desc string) (models.Region, error) {
 
 	return models.Region{
 		ID:      id,
-		Name:    name,
-		Desc:    desc,
+		Name:    req.Name,
+		Desc:    req.Desc,
 		Created: time.Now().UnixNano(),
 	}, nil
 }
@@ -75,24 +75,23 @@ func (f *Factory) NewNode(addr, name string, typ int, region, latd, longd string
 
 }
 
-func (f *Factory) NewUser(name, email, password string) (models.Admin, error) {
+func (f *Factory) NewAdmin(req models.AdminRegReq) (models.Admin, error) {
 	id, err := f.IDS.ID()
 	if err != nil {
 		return models.Admin{}, fmt.Errorf("could not create user: %w\n", err)
 	}
 
-	hashd, err := f.Hasher.Hash(password)
+	hashd, err := f.Hasher.Hash(req.Password)
 
 	if err != nil {
 		return models.Admin{}, fmt.Errorf("could not create user: %w\n", err)
 	}
 	user := models.Admin{
 		ID:       id,
-		Name:     name,
-		Email:    email,
+		Name:     req.Name,
+		Email:    req.Email,
 		Password: hashd,
 		Created:  time.Now().UnixNano(),
 	}
 	return user, nil
 }
-

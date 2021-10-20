@@ -20,7 +20,6 @@ type Tokenizer interface {
 	Parse(string) (Key, error)
 }
 
-
 // Hasher specifies an API for generating hashes of an arbitrary textual
 // content.
 type Hasher interface {
