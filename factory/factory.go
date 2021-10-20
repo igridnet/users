@@ -40,7 +40,7 @@ func (f *Factory) NewRegion(req models.RegionRegReq) (models.Region, error) {
 	}, nil
 }
 
-func (f *Factory) NewNode(addr, name string, typ int, region, latd, longd string, master string) (models.Node, error) {
+func (f *Factory) NewNode(req models.NodeRegReq) (models.Node, error) {
 	id, err := f.IDS.ID()
 	if err != nil {
 		return models.Node{}, fmt.Errorf("could not create node: %w\n", err)
@@ -50,15 +50,15 @@ func (f *Factory) NewNode(addr, name string, typ int, region, latd, longd string
 
 	node := &models.Node{
 		UUID:    id,
-		Addr:    addr,
+		Addr:   req.Addr,
 		Key:     key,
-		Name:    name,
-		Type:    typ,
-		Region:  region,
-		Latd:    latd,
-		Long:    longd,
+		Name:    req.Name,
+		Type:    req.Type,
+		Region:  req.Region,
+		Latd:    req.Latd,
+		Long:    req.Longd,
 		Created: time.Now().UnixNano(),
-		Master:  master,
+		Master:  req.Master,
 	}
 
 	valid, err := node.Valid()

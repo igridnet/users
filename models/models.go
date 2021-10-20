@@ -80,6 +80,7 @@ type NodeRegReq struct {
 	Latd   string `json:"lat,omitempty"`
 	Longd  string `json:"long,omitempty"`
 	Master string `json:"master,omitempty"`
+	Type int `json:"type,omitempty"`
 }
 
 type RegionRegReq struct {
