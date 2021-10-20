@@ -1,13 +1,13 @@
 package random
 
 import (
-	"github.com/igridnet/igridnet"
+	"github.com/igridnet/users"
 	"math/rand"
 	"time"
 )
 
 var (
-	_ igridnet.Randomizer = (*randomizer)(nil)
+	_ users.Randomizer = (*randomizer)(nil)
 )
 
 type randomizer struct {
@@ -24,7 +24,7 @@ func (r *randomizer) Get(length int) (val string) {
 	return string(b)
 }
 
-func New(pool []rune) igridnet.Randomizer {
+func New(pool []rune) users.Randomizer {
 	rand.Seed(time.Now().UnixNano())
 	return &randomizer{pool: pool}
 }
