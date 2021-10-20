@@ -19,8 +19,8 @@ var (
 type (
 
 	Client struct {
-		tokenizer Tokenizer
-		hasher Hasher
+		Tokenizer Tokenizer
+		hasher    Hasher
 		factory *factory.Factory
 		db      *pg.DB
 	}
@@ -44,7 +44,7 @@ type (
 
 func NewClient(db *pg.DB, f *factory.Factory, tokenizer Tokenizer, hasher Hasher) *Client {
 	return &Client{
-		tokenizer: tokenizer,
+		Tokenizer: tokenizer,
 		hasher:    hasher,
 		factory:   f,
 		db:        db,
@@ -147,7 +147,7 @@ func (c *Client)Login(ctx context.Context, id, password string) (token string, e
 
 	key := NewKey(admin.ID,"admin")
 
-	return c.tokenizer.Issue(key)
+	return c.Tokenizer.Issue(key)
 
 }
 
