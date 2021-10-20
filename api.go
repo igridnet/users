@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"github.com/go-pg/pg/v10"
 	"github.com/igridnet/users/factory"
 	"github.com/igridnet/users/models"
 )
@@ -18,6 +19,7 @@ type (
 
 	Client struct {
 		Factory *factory.Factory
+		db *pg.DB
 	}
 	Service interface {
 		Register(ctx context.Context, req models.AdminRegReq) (admin models.Admin, err error)
@@ -36,6 +38,13 @@ type (
 		ListNodes(ctx context.Context) ([]models.Node, error)
 	}
 )
+
+func NewClient(db *pg.DB, f *factory.Factory) *Client {
+	return &Client{
+		Factory: f,
+		db:      db,
+	}
+}
 
 func (c *Client)AddNode(ctx context.Context, node models.NodeRegReq) error {
 	panic("implement me")
