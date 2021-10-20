@@ -6,7 +6,6 @@ import (
 	"github.com/go-pg/pg/v10"
 	"github.com/igridnet/users/factory"
 	"github.com/igridnet/users/models"
-	"time"
 )
 
 var (
@@ -146,14 +145,7 @@ func (c *Client)Login(ctx context.Context, id, password string) (token string, e
 		return "", err
 	}
 
-	key := Key{
-		Issuer:    "igridnet",
-		Purpose:   "admin",
-		Subject:   "administration",
-		Audience:  "igridnet",
-		IssuedAt:  time.Now(),
-		ExpiresAt: time.Now().Add(time.Minute),
-	}
+	key := NewKey(admin.ID,"admin")
 
 	return c.tokenizer.Issue(key)
 

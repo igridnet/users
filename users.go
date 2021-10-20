@@ -41,20 +41,24 @@ type Hasher interface {
 //iat (issued at time): Time at which the JWT was issued;
 //can be used to determine age of the JWT
 type Key struct {
-	Issuer    string    `json:"iss"`
-	Purpose   string    `json:"purpose"` //api for things, access and refresh for users,
-	Subject   string    `json:"sub"`     //userid
-	Audience  string    `json:"aud"`     //igrid-message-bus, igrid-user-services
-	IssuedAt  time.Time `json:"iat"`
-	ExpiresAt time.Time `json:"exp"`
+	Purpose    string `json:"purpose"`
+	Audience  string `json:"aud"`
+	Issuer    string `json:"iss"`
+	Subject   string `json:"sub"`
+	IssuedAt  int64  `json:"iat"`
+	NotBefore int64  `json:"nbf"`
+	ExpiresAt int64  `json:"exp"`
 }
 
 func NewKey(id, purpose string) Key {
 	return Key{
 		Purpose:   purpose,
+		Audience:  "igridnet",
+		Issuer:    "igridnet.auth",
 		Subject:   id,
-		IssuedAt:  time.Now(),
-		ExpiresAt: time.Now().Add(5 * time.Minute),
+		IssuedAt:  time.Now().UnixNano(),
+		NotBefore: time.Now().UnixNano(),
+		ExpiresAt: time.Now().Add(5 * time.Minute).UnixNano(),
 	}
 }
 
