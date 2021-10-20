@@ -20,9 +20,9 @@ type (
 
 	Client struct {
 		Tokenizer Tokenizer
-		hasher    Hasher
-		factory *factory.Factory
-		db      *pg.DB
+		Hasher  Hasher
+		Factory *factory.Factory
+		Db      *pg.DB
 	}
 	Service interface {
 		Register(ctx context.Context, req models.AdminRegReq) (admin models.Admin, err error)
@@ -42,21 +42,12 @@ type (
 	}
 )
 
-func NewClient(db *pg.DB, f *factory.Factory, tokenizer Tokenizer, hasher Hasher) *Client {
-	return &Client{
-		Tokenizer: tokenizer,
-		hasher:    hasher,
-		factory:   f,
-		db:        db,
-	}
-}
-
 func (c *Client)AddNode(ctx context.Context, node models.NodeRegReq) error {
-	newNode, err := c.factory.NewNode(node)
+	newNode, err := c.Factory.NewNode(node)
 	if err != nil {
 		return err
 	}
-	_, err = c.db.Model(&newNode).Returning("*").Insert()
+	_, err = c.Db.Model(&newNode).Returning("*").Insert()
 	if err != nil {
 		return fmt.Errorf("could not insert new node %v due to: %w\n", node, err)
 	}
@@ -66,7 +57,7 @@ func (c *Client)AddNode(ctx context.Context, node models.NodeRegReq) error {
 
 func (c *Client)GetNode(ctx context.Context, id string) (models.Node, error) {
 	node := new(models.Node)
-	err := c.db.Model(node).Where("id = ?", id).Select()
+	err := c.Db.Model(node).Where("id = ?", id).Select()
 	if err != nil {
 		return models.Node{}, fmt.Errorf("could not retrieve node of id %s: %w", id, err)
 	}
@@ -77,7 +68,7 @@ func (c *Client)GetNode(ctx context.Context, id string) (models.Node, error) {
 
 func (c *Client)ListNodes(ctx context.Context) ([]models.Node, error) {
 	var nodes []models.Node
-	err := c.db.Model(&nodes).Select()
+	err := c.Db.Model(&nodes).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -85,11 +76,11 @@ func (c *Client)ListNodes(ctx context.Context) ([]models.Node, error) {
 }
 
 func (c *Client)AddRegion(ctx context.Context, req models.RegionRegReq) error {
-	newRegion, err := c.factory.NewRegion(req)
+	newRegion, err := c.Factory.NewRegion(req)
 	if err != nil {
 		return err
 	}
-	_, err = c.db.Model(&newRegion).Returning("*").Insert()
+	_, err = c.Db.Model(&newRegion).Returning("*").Insert()
 	if err != nil {
 		return fmt.Errorf("could not insert new region %v due to: %w\n", newRegion, err)
 	}
@@ -99,7 +90,7 @@ func (c *Client)AddRegion(ctx context.Context, req models.RegionRegReq) error {
 
 func (c *Client)GetRegion(ctx context.Context, id string) (models.Region, error) {
 	region := new(models.Region)
-	err := c.db.Model(region).Where("id = ?", id).Select()
+	err := c.Db.Model(region).Where("id = ?", id).Select()
 	if err != nil {
 		return models.Region{}, fmt.Errorf("could not retrieve node of id %s: %w", id, err)
 	}
@@ -110,7 +101,7 @@ func (c *Client)GetRegion(ctx context.Context, id string) (models.Region, error)
 
 func (c *Client)ListRegions(ctx context.Context) ([]models.Region, error) {
 	var regions []models.Region
-	err := c.db.Model(&regions).Select()
+	err := c.Db.Model(&regions).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -118,11 +109,11 @@ func (c *Client)ListRegions(ctx context.Context) ([]models.Region, error) {
 }
 
 func (c *Client)Register(ctx context.Context, req models.AdminRegReq) (admin models.Admin, err error) {
-	newAdmin, err := c.factory.NewAdmin(req)
+	newAdmin, err := c.Factory.NewAdmin(req)
 	if err != nil {
 		return admin,err
 	}
-	_, err = c.db.Model(&newAdmin).Returning("*").Insert()
+	_, err = c.Db.Model(&newAdmin).Returning("*").Insert()
 	if err != nil {
 		return admin,fmt.Errorf("could not insert new region %v due to: %w\n", newAdmin, err)
 	}
@@ -132,7 +123,7 @@ func (c *Client)Register(ctx context.Context, req models.AdminRegReq) (admin mod
 
 func (c *Client)Login(ctx context.Context, id, password string) (token string, err error) {
 	admin := new(models.Admin)
-	err = c.db.Model(admin).Where("id = ?", id).Select()
+	err = c.Db.Model(admin).Where("id = ?", id).Select()
 	if err != nil {
 		return "", fmt.Errorf("could not retrieve user of id %s: %w", id, err)
 	}
@@ -140,7 +131,7 @@ func (c *Client)Login(ctx context.Context, id, password string) (token string, e
 	hashedPassword := admin.Password
 
 	//compare passwords
-	err = c.hasher.Compare(hashedPassword, password)
+	err = c.Hasher.Compare(hashedPassword, password)
 	if err != nil {
 		return "", err
 	}
