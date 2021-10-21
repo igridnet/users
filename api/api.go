@@ -18,11 +18,6 @@ func NewClient(db *pg.DB, f *factory.Factory, tokenizer users.Tokenizer, hasher 
 	}
 }
 
-var (
-	_ users.Service       = (*Client)(nil)
-	_ users.RegionService = (*Client)(nil)
-	_ users.NodeService   = (*Client)(nil)
-)
 
 type Client struct {
 	Tokenizer users.Tokenizer
@@ -31,17 +26,17 @@ type Client struct {
 	Db        *pg.DB
 }
 
-func (c *Client) AddNode(ctx context.Context, node models.NodeRegReq) error {
+func (c *Client) AddNode(ctx context.Context, node models.NodeRegReq) (models.Node,error) {
 	newNode, err := c.Factory.NewNode(node)
 	if err != nil {
-		return err
+		return models.Node{},err
 	}
 	_, err = c.Db.Model(&newNode).Returning("*").Insert()
 	if err != nil {
-		return fmt.Errorf("could not insert new node %v due to: %w\n", node, err)
+		return models.Node{},fmt.Errorf("could not insert new node %v due to: %w\n", node, err)
 	}
 
-	return nil
+	return newNode,nil
 }
 
 func (c *Client) GetNode(ctx context.Context, id string) (models.Node, error) {
@@ -64,17 +59,17 @@ func (c *Client) ListNodes(ctx context.Context) ([]models.Node, error) {
 	return nodes, nil
 }
 
-func (c *Client) AddRegion(ctx context.Context, req models.RegionRegReq) error {
+func (c *Client) AddRegion(ctx context.Context, req models.RegionRegReq) (models.Region,error) {
 	newRegion, err := c.Factory.NewRegion(req)
 	if err != nil {
-		return err
+		return models.Region{},err
 	}
 	_, err = c.Db.Model(&newRegion).Returning("*").Insert()
 	if err != nil {
-		return fmt.Errorf("could not insert new region %v due to: %w\n", newRegion, err)
+		return models.Region{},fmt.Errorf("could not insert new region %v due to: %w\n", newRegion, err)
 	}
 
-	return nil
+	return newRegion,nil
 }
 
 func (c *Client) GetRegion(ctx context.Context, id string) (models.Region, error) {
