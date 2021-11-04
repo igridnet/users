@@ -33,7 +33,7 @@ type Region struct {
 type Node struct {
 	// By default go-pg generates table name and alias from struct name.
 	tableName struct{} `pg:"nodes,alias:nodes"`
-	UUID      string   `json:"uuid,omitempty"  pg:"uuid,pk,unique"`
+	UUID      string   `json:"id,omitempty"  pg:"id,pk,unique"`
 	Addr      string   `json:"addr" pg:"addr"`
 	Key       string   `json:"key,omitempty" pg:"key"`
 	Name      string   `json:"name" pg:"name"`
